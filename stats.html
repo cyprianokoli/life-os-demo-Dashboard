@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Stats">
+    <meta name="theme-color" content="#0f0f0f">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <title>Stats - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            text-decoration: none;
+            color: #fff;
+            transition: background 0.2s;
+        }
+        
+        .back-btn:active {
+            background: #2a2a2a;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .card-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+        }
+        
+        .icon {
+            font-size: 20px;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: #111;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .stat-value.blue { color: #3b82f6; }
+        .stat-value.green { color: #22c55e; }
+        .stat-value.orange { color: #f97316; }
+        .stat-value.purple { color: #a855f7; }
+        .stat-value.red { color: #ef4444; }
+        .stat-value.yellow { color: #eab308; }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            color: #aaa;
+            margin: 20px 0 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-top: 16px;
+            border-top: 1px solid #2a2a2a;
+        }
+        
+        .section-title:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+        
+        .progress-bar {
+            background: #2a2a2a;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-fill.green { background: #22c55e; }
+        .progress-fill.blue { background: #3b82f6; }
+        .progress-fill.orange { background: #f97316; }
+        .progress-fill.purple { background: #a855f7; }
+        .progress-fill.red { background: #ef4444; }
+        .progress-fill.yellow { background: #eab308; }
+        
+        .progress-text {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-name {
+            color: #aaa;
+        }
+        
+        .stat-number {
+            font-weight: 600;
+        }
+        
+        .challenge-card {
+            background: #111;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .challenge-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .challenge-meta {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge.active {
+            background: #22c55e33;
+            color: #22c55e;
+        }
+        
+        .badge.pending {
+            background: #f9731633;
+            color: #f97316;
+        }
+        
+        .badge.upcoming {
+            background: #3b82f633;
+            color: #3b82f6;
+        }
+        
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 12px;
+        }
+        
+        .heatmap-day {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .heatmap-day.active { background: #22c55e; color: #0f0f0f; }
+        .heatmap-day.partial { background: #3b82f6; color: #fff; }
+        .heatmap-day.missed { background: #ef4444; color: #fff; }
+        
+        .heatmap-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f0f0f;
+            border-top: 1px solid #2a2a2a;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+        }
+        
+        .nav-item.active {
+            color: #3b82f6;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="back-btn">&larr;</a>
+        <h1>📊 Stats & Progress</h1>
+    </div>
+
+    <!-- Weekly Summary -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">📈</span>
+            <h2>This Week</h2>
+        </div>
+        
+        <div class="stat-grid">
+            <div class="stat-box">
+                <div class="stat-value blue" id="weekly-study-hours">0</div>
+                <div class="stat-label">Study Hours</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value green" id="weekly-gym-sessions">0</div>
+                <div class="stat-label">Gym</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value orange" id="weekly-tasks-completed">0</div>
+                <div class="stat-label">Tasks Done</div>
+            </div>
+        </div>
+        
+        <div class="section-title">Study Breakdown</div>
+        <div class="stat-row">
+            <span class="stat-name">Network+</span>
+            <span class="stat-number" id="weekly-network-hours">0 hrs</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">French</span>
+            <span class="stat-number" id="weekly-french-hours">0 hrs</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">Security+</span>
+            <span class="stat-number" id="weekly-security-hours">0 hrs</span>
+        </div>
+    </div>
+
+    <!-- 90-Day Challenge Progress -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">💪</span>
+            <h2>90-Day Challenge</h2>
+        </div>
+        
+        <div class="challenge-card">
+            <div class="challenge-title">Phase 1: Network+</div>
+            <div class="challenge-meta">Day 6 of 30 <span class="badge active">Active</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill green" style="width: 20%"></div>
+            </div>
+            <div class="progress-text">20% complete</div>
+        </div>
+        
+        <div class="challenge-card">
+            <div class="challenge-title">Phase 2: Security+</div>
+            <div class="challenge-meta">Starts Mar 18 <span class="badge upcoming">Upcoming</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill blue" style="width: 0%"></div>
+            </div>
+            <div class="progress-text">0% complete</div>
+        </div>
+        
+        <div class="challenge-card">
+            <div class="challenge-title">Phase 3: Real Estate App MVP</div>
+            <div class="challenge-meta">Starts Apr 17 <span class="badge pending">Planned</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill orange" style="width: 0%"></div>
+            </div>
+            <div class="progress-text">Planning phase</div>
+        </div>
+    </div>
+
+    <!-- Streaks -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🔥</span>
+            <h2>Streaks</h2>
+        </div>
+        
+        <div class="stat-grid">
+            <div class="stat-box">
+                <div class="stat-value purple" id="streak-network">0</div>
+                <div class="stat-label">Network+</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value yellow" id="streak-french">0</div>
+                <div class="stat-label">French</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value red" id="streak-gym">0</div>
+                <div class="stat-label">Gym</div>
+            </div>
+        </div>
+        
+        <div class="section-title">Last 30 Days</div>
+        <div class="heatmap" id="streak-heatmap">
+            <!-- Generated by JS -->
+        </div>
+        <div class="heatmap-labels">
+            <span>Less</span>
+            <span>More</span>
+        </div>
+    </div>
+
+    <!-- Benjamin Status -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🪨</span>
+            <h2>Benjamin Status</h2>
+        </div>
+        
+        <div class="stat-row">
+            <span class="stat-name">Current Model</span>
+            <span class="stat-number">Kimi K2.5</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">Last Active</span>
+            <span class="stat-number" id="last-active">Just now</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-name">Active Reminders</span>
+            <span class="stat-number" id="reminders-count">0</span>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav-bar">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="stats.html" class="nav-item active">
+            <span class="nav-icon">📊</span>
+            <span>Stats</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+        </a>
+    </div>
+
+    <script>
+        // Load data from localStorage
+        function loadStats() {
+            // Weekly stats
+            const now = new Date();
+            const weekStart = new Date(now);
+            weekStart.setDate(now.getDate() - now.getDay());
+            weekStart.setHours(0, 0, 0, 0);
+
+            let studyHours = 0;
+            let networkHours = 0;
+            let frenchHours = 0;
+            let securityHours = 0;
+            let gymSessions = 0;
+            let tasksCompleted = 0;
+
+            // Calculate study hours
+            const sessions = JSON.parse(localStorage.getItem('studySessions') || '[]');
+            sessions.forEach(session => {
+                const sessionDate = new Date(session.timestamp);
+                if (sessionDate >= weekStart) {
+                    studyHours += session.hours || 0;
+                    if (session.topic?.toLowerCase().includes('network')) networkHours += session.hours || 0;
+                    else if (session.topic?.toLowerCase().includes('french')) frenchHours += session.hours || 0;
+                    else if (session.topic?.toLowerCase().includes('security')) securityHours += session.hours || 0;
+                }
+            });
+
+            // Count gym sessions from streak data
+            const streakData = JSON.parse(localStorage.getItem('streakData') || '{}');
+            if (streakData.gym && streakData.gym.history) {
+                for (const [date, done] of Object.entries(streakData.gym.history)) {
+                    const sessionDate = new Date(date);
+                    if (done && sessionDate >= weekStart) gymSessions++;
+                }
+            }
+
+            // Count completed tasks
+            const completed = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+            tasksCompleted = Object.values(completed).filter(v => v).length;
+
+            // Update weekly display
+            document.getElementById('weekly-study-hours').textContent = Math.round(studyHours * 10) / 10;
+            document.getElementById('weekly-gym-sessions').textContent = gymSessions;
+            document.getElementById('weekly-tasks-completed').textContent = tasksCompleted;
+            document.getElementById('weekly-network-hours').textContent = Math.round(networkHours * 10) / 10 + ' hrs';
+            document.getElementById('weekly-french-hours').textContent = Math.round(frenchHours * 10) / 10 + ' hrs';
+            document.getElementById('weekly-security-hours').textContent = Math.round(securityHours * 10) / 10 + ' hrs';
+
+            // Update streaks
+            ['network', 'french', 'gym'].forEach(type => {
+                let streak = 0;
+                let checkDate = new Date();
+                
+                while (true) {
+                    const dateStr = checkDate.toISOString().split('T')[0];
+                    if (streakData[type]?.history?.[dateStr]) {
+                        streak++;
+                        checkDate.setDate(checkDate.getDate() - 1);
+                    } else if (dateStr === now.toISOString().split('T')[0]) {
+                        checkDate.setDate(checkDate.getDate() - 1);
+                    } else {
+                        break;
+                    }
+                }
+                
+                document.getElementById('streak-' + type).textContent = streak;
+            });
+
+            // Generate 30-day heatmap
+            const heatmap = document.getElementById('streak-heatmap');
+            heatmap.innerHTML = '';
+            
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                // Count activities for this day
+                let activities = 0;
+                ['network', 'french', 'gym'].forEach(type => {
+                    if (streakData[type]?.history?.[dateStr]) activities++;
+                });
+                
+                const div = document.createElement('div');
+                div.className = 'heatmap-day';
+                if (i === 0) {
+                    div.classList.add(activities === 3 ? 'active' : activities > 0 ? 'partial' : '');
+                } else {
+                    if (activities === 0) div.classList.add('missed');
+                    else if (activities === 3) div.classList.add('active');
+                    else div.classList.add('partial');
+                }
+                heatmap.appendChild(div);
+            }
+
+            // Update reminder count
+            const notificationSettings = JSON.parse(localStorage.getItem('notificationSettings') || '{}');
+            const activeReminders = Object.values(notificationSettings).filter(v => v).length;
+            document.getElementById('reminders-count').textContent = activeReminders;
+        }
+
+        // Load on page load
+        loadStats();
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered:', registration);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    </script>
+</body>
+</html>

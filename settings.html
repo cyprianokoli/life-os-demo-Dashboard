@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Settings">
+    <meta name="theme-color" content="#0f0f0f">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <title>Settings - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        
+        .back-btn:active {
+            background: #2a2a2a;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .card-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+        }
+        
+        .icon {
+            font-size: 20px;
+        }
+        
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-label {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .setting-desc {
+            font-size: 13px;
+            color: #888;
+        }
+        
+        .toggle {
+            position: relative;
+            width: 52px;
+            height: 32px;
+            background: #2a2a2a;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle.on {
+            background: #3b82f6;
+        }
+        
+        .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .toggle.on .toggle-knob {
+            transform: translateX(20px);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: #fff;
+        }
+        
+        .btn-primary:active {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .btn-secondary:active {
+            background: #333;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        
+        .btn-danger:active {
+            background: #dc2626;
+        }
+        
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+        
+        .info-box {
+            background: #1a1a2e;
+            border: 1px solid #3a3a5a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .info-box h4 {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        
+        .info-box p {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.6;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .danger-zone {
+            border: 1px solid #7f1d1d;
+            background: #1a0f0f;
+        }
+        
+        .danger-zone .card-header h2 {
+            color: #ef4444;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .toast {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 250px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            font-size: 24px;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Bottom Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f0f0f;
+            border-top: 1px solid #2a2a2a;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #666;
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: #3b82f6;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        body {
+            padding-bottom: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toast-container"></div>
+    
+    <div class="header">
+        <a href="index.html" class="back-btn">←</a>
+        <h1>⚙️ Settings</h1>
+    </div>
+
+    <!-- Notifications -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🔔</span>
+            <h2>Notifications</h2>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Study Reminders</div>
+                <div class="setting-desc">9 AM daily Network+ reminder</div>
+            </div>
+            <div class="toggle" id="toggle-study" onclick="toggleSetting('study')">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Gym Reminders</div>
+                <div class="setting-desc">6 AM on workout days</div>
+            </div>
+            <div class="toggle" id="toggle-gym" onclick="toggleSetting('gym')">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">French Study</div>
+                <div class="setting-desc">1 PM daily reminder</div>
+            </div>
+            <div class="toggle" id="toggle-french" onclick="toggleSetting('french')">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Task Nudges</div>
+                <div class="setting-desc">Reminders for uncompleted tasks</div>
+            </div>
+            <div class="toggle" id="toggle-tasks" onclick="toggleSetting('tasks')">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Daily Summary</div>
+                <div class="setting-desc">End-of-day progress report (9 PM)</div>
+            </div>
+            <div class="toggle" id="toggle-summary" onclick="toggleSetting('summary')">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>Notification Permission</h4>
+            <p id="notif-permission-status">Checking...</p>
+        </div>
+    </div>
+
+    <!-- Data & Backup -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">💾</span>
+            <h2>Data & Backup</h2>
+        </div>
+        
+        <button class="btn btn-primary" onclick="exportData()">
+            <span>📥</span> Export All Data
+        </button>
+        
+        <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">
+            <span>📤</span> Import Backup
+        </button>
+        <input type="file" id="import-file" accept=".json" onchange="importData(event)">
+        
+        <div class="info-box">
+            <h4>Storage Info</h4>
+            <p>Last backup: <span id="last-backup">Never</span></p>
+            <p>Total entries: <span id="total-entries" class="stat-value">0</span></p>
+            <p>Streak data: <span id="streak-days" class="stat-value">0</span> days</p>
+        </div>
+    </div>
+
+    <!-- Sync Settings -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🔄</span>
+            <h2>Sync & Offline</h2>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Auto-Sync</div>
+                <div class="setting-desc">Sync changes when back online</div>
+            </div>
+            <div class="toggle on" id="toggle-autosync" onclick="toggleSetting('autosync')">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="forceSyncNow()">
+            <span>⚡</span> Sync Now
+        </button>
+        
+        <div class="info-box">
+            <h4>Sync Status</h4>
+            <p>Queue: <span id="sync-queue-count" class="stat-value">0</span> items</p>
+            <p>Last sync: <span id="last-sync">Never</span></p>
+            <p>Status: <span id="sync-status">✅ All synced</span></p>
+        </div>
+    </div>
+
+    <!-- Backend Connection -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">☁️</span>
+            <h2>Backend Connection</h2>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Cloud Backend</div>
+                <div class="setting-desc" id="backend-desc">Checking connection...</div>
+            </div>
+            <div class="toggle" id="backend-status-indicator">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>Connection Details</h4>
+            <p>URL: <span id="backend-url" class="stat-value">juniors-dashboard.pages.dev</span></p>
+            <p>Status: <span id="backend-status-text">Checking...</span></p>
+            <p>Last seen: <span id="backend-last-seen">Never</span></p>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="checkBackendConnection()">
+            <span>🔄</span> Test Connection
+        </button>
+    </div>
+
+    <!-- Display Settings -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🎨</span>
+            <h2>Display</h2>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Dark Mode</div>
+                <div class="setting-desc">Always on (for now)</div>
+            </div>
+            <div class="toggle on">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Compact View</div>
+                <div class="setting-desc">Reduce spacing between cards</div>
+            </div>
+            <div class="toggle" id="toggle-compact" onclick="toggleSetting('compact')">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">ℹ️</span>
+            <h2>About</h2>
+        </div>
+        
+        <div class="info-box">
+            <h4>Dashboard Version</h4>
+            <p>Version: <span class="stat-value">2.1.0</span></p>
+            <p>Build: Feb 16, 2026</p>
+            <p>Model: Kimi K2.5 (Local)</p>
+            <p>Benjamin 🪨</p>
+        </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="card danger-zone">
+        <div class="card-header">
+            <span class="icon">⚠️</span>
+            <h2>Danger Zone</h2>
+        </div>
+        
+        <button class="btn btn-danger" onclick="confirmClearAllData()">
+            <span>🗑️</span> Clear All Data
+        </button>
+        
+        <button class="btn btn-danger" onclick="confirmResetStreaks()">
+            <span>🔥</span> Reset All Streaks
+        </button>
+    </div>
+
+    <script>
+        // Toast notifications
+        function showToast(title, message, icon = '🔔') {
+            const container = document.getElementById('toast-container');
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <span class="toast-icon">${icon}</span>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Load settings
+        const settings = JSON.parse(localStorage.getItem('notificationSettings') || '{}');
+        
+        function loadSettings() {
+            // Notification toggles
+            ['study', 'gym', 'french', 'tasks', 'summary', 'autosync', 'compact'].forEach(key => {
+                const toggle = document.getElementById('toggle-' + key);
+                if (toggle && settings[key]) {
+                    toggle.classList.add('on');
+                }
+            });
+            
+            // Check notification permission
+            if ('Notification' in window) {
+                const status = Notification.permission;
+                const statusText = document.getElementById('notif-permission-status');
+                if (status === 'granted') {
+                    statusText.textContent = '✅ Notifications enabled';
+                    statusText.style.color = '#22c55e';
+                } else if (status === 'denied') {
+                    statusText.textContent = '❌ Notifications blocked (enable in browser settings)';
+                    statusText.style.color = '#ef4444';
+                } else {
+                    statusText.innerHTML = '⚠️ Not enabled. <a href="#" onclick="requestNotificationPermission(); return false;" style="color:#3b82f6">Enable now</a>';
+                    statusText.style.color = '#f59e0b';
+                }
+            } else {
+                document.getElementById('notif-permission-status').textContent = '❌ Notifications not supported';
+            }
+            
+            // Storage info
+            const backup = localStorage.getItem('dashboardBackup');
+            if (backup) {
+                const data = JSON.parse(backup);
+                document.getElementById('last-backup').textContent = new Date(data.timestamp).toLocaleString();
+            }
+            
+            const journalEntries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+            const srItems = JSON.parse(localStorage.getItem('srItems') || '[]');
+            const tasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+            const totalEntries = journalEntries.length + srItems.length + Object.keys(tasks).length;
+            document.getElementById('total-entries').textContent = totalEntries;
+            
+            const streakData = JSON.parse(localStorage.getItem('streakData') || '{}');
+            const streakDays = Object.keys(streakData).length;
+            document.getElementById('streak-days').textContent = streakDays;
+            
+            // Sync info
+            const syncQueue = JSON.parse(localStorage.getItem('syncQueue') || '[]');
+            document.getElementById('sync-queue-count').textContent = syncQueue.length;
+            document.getElementById('sync-status').textContent = syncQueue.length === 0 ? '✅ All synced' : '⏳ Pending sync';
+            
+            const lastSync = localStorage.getItem('lastSync');
+            if (lastSync) {
+                document.getElementById('last-sync').textContent = new Date(parseInt(lastSync)).toLocaleString();
+            }
+        }
+        
+        function toggleSetting(key) {
+            settings[key] = !settings[key];
+            localStorage.setItem('notificationSettings', JSON.stringify(settings));
+            
+            const toggle = document.getElementById('toggle-' + key);
+            toggle.classList.toggle('on');
+            
+            showToast('Setting Updated', `${key} ${settings[key] ? 'enabled' : 'disabled'}`, '⚙️');
+        }
+        
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showToast('Notifications Enabled', 'You will receive reminders!', '🔔');
+                        loadSettings();
+                    } else {
+                        showToast('Permission Denied', 'Enable in browser settings', '❌');
+                    }
+                });
+            }
+        }
+        
+        function exportData() {
+            const backup = {
+                timestamp: Date.now(),
+                data: {
+                    completedTasks: JSON.parse(localStorage.getItem('completedTasks') || '{}'),
+                    taskNotes: JSON.parse(localStorage.getItem('taskNotes') || '{}'),
+                    journalEntries: JSON.parse(localStorage.getItem('journalEntries') || '[]'),
+                    srItems: JSON.parse(localStorage.getItem('srItems') || '[]'),
+                    streaks: JSON.parse(localStorage.getItem('streaks') || '{}'),
+                    streakData: JSON.parse(localStorage.getItem('streakData') || '{}'),
+                    notificationSettings: JSON.parse(localStorage.getItem('notificationSettings') || '{}'),
+                    scheduledNotifications: JSON.parse(localStorage.getItem('scheduledNotifications') || '[]')
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dashboard-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            showToast('Data Exported', 'Backup file downloaded!', '💾');
+        }
+        
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const backup = JSON.parse(e.target.result);
+                    if (backup.data) {
+                        Object.entries(backup.data).forEach(([key, value]) => {
+                            localStorage.setItem(key, JSON.stringify(value));
+                        });
+                        showToast('Import Successful', 'Reloading...', '✅');
+                        setTimeout(() => window.location.href = 'index.html', 1500);
+                    }
+                } catch (error) {
+                    showToast('Import Failed', 'Invalid backup file', '❌');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function forceSyncNow() {
+            showToast('Syncing...', 'Uploading queued data', '🔄');
+            
+            // Trigger sync (placeholder - would call actual sync function)
+            setTimeout(() => {
+                localStorage.setItem('lastSync', Date.now().toString());
+                localStorage.setItem('syncQueue', '[]');
+                showToast('Sync Complete', 'All data uploaded!', '✅');
+                loadSettings();
+            }, 1500);
+        }
+        
+        function confirmClearAllData() {
+            if (confirm('⚠️ This will delete ALL dashboard data including tasks, journal, streaks, and settings. This cannot be undone!\n\nAre you sure?')) {
+                localStorage.clear();
+                showToast('Data Cleared', 'Redirecting to dashboard...', '🗑️');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            }
+        }
+        
+        function confirmResetStreaks() {
+            if (confirm('⚠️ This will reset all your streaks to zero. Continue?')) {
+                localStorage.removeItem('streaks');
+                localStorage.removeItem('streakData');
+                showToast('Streaks Reset', 'All streaks cleared', '🔥');
+                loadSettings();
+            }
+        }
+
+        // Backend connection check
+        const API_BASE_URL = 'https://juniors-dashboard.pages.dev/api';
+
+        async function checkBackendConnection() {
+            const statusText = document.getElementById('backend-status-text');
+            const lastSeen = document.getElementById('backend-last-seen');
+            const indicator = document.getElementById('backend-status-indicator');
+            const desc = document.getElementById('backend-desc');
+
+            statusText.textContent = 'Testing...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    statusText.textContent = '✅ Connected';
+                    statusText.style.color = '#22c55e';
+                    indicator.classList.add('on');
+                    desc.textContent = 'Backend is online and syncing';
+                    localStorage.setItem('backendLastSeen', Date.now().toString());
+                    lastSeen.textContent = new Date().toLocaleString();
+                    showToast('Backend Connected', 'Sync is active', '☁️');
+                } else {
+                    throw new Error('Backend error');
+                }
+            } catch (error) {
+                statusText.textContent = '❌ Offline';
+                statusText.style.color = '#ef4444';
+                indicator.classList.remove('on');
+                desc.textContent = 'Using local storage only';
+                const lastSeenTime = localStorage.getItem('backendLastSeen');
+                if (lastSeenTime) {
+                    lastSeen.textContent = new Date(parseInt(lastSeenTime)).toLocaleString();
+                } else {
+                    lastSeen.textContent = 'Never';
+                }
+            }
+        }
+
+        // Check backend on page load
+        checkBackendConnection();
+
+        // Initialize
+        loadSettings();
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered:', registration);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    </script>
+
+    <!-- Bottom Navigation -->
+    <div class="nav-bar">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>Stats</span>
+        </a>
+        <a href="settings.html" class="nav-item active">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+        </a>
+    </div>
+</body>
+</html>

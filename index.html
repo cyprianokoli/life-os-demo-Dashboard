@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 100px;
+        }
+        .demo-banner {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .demo-banner h2 { font-size: 18px; margin-bottom: 4px; }
+        .demo-banner p { font-size: 13px; opacity: 0.9; }
+        .header { margin-bottom: 24px; }
+        .header h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+        .header .date { color: #888; font-size: 14px; }
+        .card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2a2a2a;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .card-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+        }
+        .progress-bar {
+            background: #2a2a2a;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .progress-fill.green { background: #22c55e; }
+        .progress-fill.blue { background: #3b82f6; }
+        .progress-text { font-size: 13px; color: #888; }
+        .task-list { list-style: none; }
+        .task-item {
+            border-bottom: 1px solid #2a2a2a;
+            overflow: hidden;
+        }
+        .task-item:last-child { border-bottom: none; }
+        .task-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            cursor: pointer;
+        }
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #444;
+            border-radius: 6px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checkbox.done {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+        .checkbox.done::after {
+            content: '✓';
+            color: #0f0f0f;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .task-text { flex: 1; }
+        .task-title { font-size: 15px; font-weight: 500; }
+        .task-meta { font-size: 12px; color: #666; margin-top: 4px; }
+        .streak-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #2a2a2a;
+        }
+        .streak-stat { text-align: center; }
+        .streak-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #22c55e;
+        }
+        .streak-stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f0f0f;
+            border-top: 1px solid #2a2a2a;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            color: #3b82f6;
+            font-size: 11px;
+        }
+        .nav-icon { font-size: 20px; }
+    </style>
+</head>
+<body>
+    <div class="demo-banner">
+        <h2>👋 Welcome to Life OS</h2>
+        <p>A personal productivity dashboard for tracking habits, study progress, and daily routines.</p>
+    </div>
+
+    <div class="header">
+        <h1>👋 Hey Alex</h1>
+        <div class="date">Tuesday, February 17</div>
+    </div>
+
+    <!-- 90-Day Challenge -->
+    <div class="card">
+        <div class="card-header">
+            <span style="font-size: 20px;">💪</span>
+            <h2>Today's Focus</h2>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill green" style="width: 20%"></div>
+        </div>
+        <div class="progress-text">Day 6 of 30 — Network+ Challenge</div>
+
+        <div style="background: #111; border-radius: 12px; padding: 16px; margin-top: 16px;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">🎯 Ports & Protocols</div>
+            <div style="font-size: 13px; color: #888; margin-bottom: 12px;">Today's study topic</div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                    <span style="color: #22c55e;">✓</span> TCP vs UDP differences
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                    <span style="color: #22c55e;">✓</span> Three-way handshake
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                    <span>○</span> Common ports (22, 53, 80, 443)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Streaks -->
+    <div class="card">
+        <div class="card-header">
+            <span style="font-size: 20px;">🔥</span>
+            <h2>Streaks</h2>
+        </div>
+        <div class="streak-stats">
+            <div class="streak-stat">
+                <div class="streak-stat-value">6</div>
+                <div class="streak-stat-label">Network+</div>
+            </div>
+            <div class="streak-stat">
+                <div class="streak-stat-value">12</div>
+                <div class="streak-stat-label">French</div>
+            </div>
+            <div class="streak-stat">
+                <div class="streak-stat-value">4</div>
+                <div class="streak-stat-label">Gym</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Schedule -->
+    <div class="card">
+        <div class="card-header">
+            <span style="font-size: 20px;">📅</span>
+            <h2>Today's Schedule</h2>
+        </div>
+
+        <ul class="task-list">
+            <li class="task-item">
+                <div class="task-row">
+                    <div class="checkbox done"></div>
+                    <div class="task-text">
+                        <div class="task-title">6:00 AM — Morning Routine</div>
+                        <div class="task-meta">4/4 done</div>
+                    </div>
+                </div>
+            </li>
+            <li class="task-item">
+                <div class="task-row">
+                    <div class="checkbox done"></div>
+                    <div class="task-text">
+                        <div class="task-title">9:00 AM — Network+ Study</div>
+                        <div class="task-meta">2/3 done • Ports & Protocols</div>
+                    </div>
+                </div>
+            </li>
+            <li class="task-item">
+                <div class="task-row">
+                    <div class="checkbox"></div>
+                    <div class="task-text">
+                        <div class="task-title">1:00 PM — French Study</div>
+                        <div class="task-meta">0/2 done</div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Spaced Repetition -->
+    <div class="card">
+        <div class="card-header">
+            <span style="font-size: 20px;">🧠</span>
+            <h2>Spaced Repetition</h2>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill blue" style="width: 50%"></div>
+        </div>
+        <div class="progress-text">2 due for review</div>
+
+        <div style="background: #111; border-radius: 12px; padding: 16px; margin-top: 12px; border-left: 4px solid #ef4444;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 600;">OSI Model Layers</span>
+                <span style="font-size: 12px; color: #ef4444;">Due now</span>
+            </div>
+            <div style="font-size: 12px; color: #666;">Interval: 1 day • Reviews: 2</div>
+        </div>
+
+        <div style="background: #111; border-radius: 12px; padding: 16px; margin-top: 12px; border-left: 4px solid #f97316;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 600;">Subnetting</span>
+                <span style="font-size: 12px; color: #f97316;">Review soon</span>
+            </div>
+            <div style="font-size: 12px; color: #666;">Interval: 3 days • Reviews: 1</div>
+        </div>
+    </div>
+
+    <!-- Journal -->
+    <div class="card">
+        <div class="card-header">
+            <span style="font-size: 20px;">📖</span>
+            <h2>Journal</h2>
+        </div>
+        <div style="background: #111; border-radius: 12px; padding: 16px;">
+            <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Today, 8:30 AM</div>
+            <div style="font-size: 14px; line-height: 1.6;">
+                Great start to the day. Finished morning routine and got through most of my Network+ study. TCP vs UDP finally clicking. Need to memorize those port numbers!
+            </div>
+        </div>
+        <button class="btn btn-primary">+ Add Journal Entry</button>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="nav-bar">
+        <div class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" style="color: #666;">
+            <span class="nav-icon">📊</span>
+            <span>Stats</span>
+        </div>
+        <div class="nav-item" style="color: #666;">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+        </div>
+    </div>
+</body>
+</html>
